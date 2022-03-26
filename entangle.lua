@@ -15,7 +15,13 @@ btiles = {
 }
 
 ftiles = {
-	player = 256,
+	player = {
+		260, --up
+		261, --down
+		259, --left (flipped)
+	 259  --right
+	},
+
 	pick = 258
 }
 
@@ -95,12 +101,12 @@ end
 
 function update()
 
-	newx = p.x + p.dirx
-	newy = p.y + p.diry
+	local newx = p.x + p.dirx
+	local newy = p.y + p.diry
 	
 	if newx ~= p.x or newy ~= p.y then
 		
-		tile = mget(newx, newy)
+		local tile = mget(newx, newy)
 		
 		if (
 			handleGoalTile(tile, newx, newy)
@@ -164,7 +170,7 @@ function handleRockTile(tile, newx, newy)
 		return false
 end
 
-function handleGoalTile()
+function handleGoalTile(tile, newx, newy)
 	if tile == btiles.goal then
 		p.x = newx
 		p.y = newy
@@ -179,7 +185,7 @@ function handleGoalTile()
 	return false
 end
 
-function handleEmptyTile()
+function handleEmptyTile(tile, newx, newy)
 
 	if tile == btiles.empty then
 		p.x = newx
@@ -234,11 +240,17 @@ end
 function render()
 
  map(0, 0, 30, 17)
- spr(ftiles.player, p.x * 8, p.y * 8, 0)
-
+	drawPlayer()
 	drawEntangs()
 	hud()
 
+end
+
+function drawPlayer()
+	 
+	local flip = 0
+	if p.look == 2 then flip = 1 end
+	spr(ftiles.player[p.look + 1], p.x * 8, p.y * 8, 0, 1, flip)
 end
 
 function drawEntangs()
