@@ -73,6 +73,11 @@ function input()
 	
 	if btnp(4) then p.entang = true end
 	if btnp(5) then p.break_block = true end
+	if btnp(7) then
+		load_level(cur_lvl)
+		return
+	end
+
 
 	if btnp(0) then
 		p.diry = -1
@@ -94,7 +99,6 @@ function input()
 		p.look = 3
 		return --right
 	end
-	
 end
 
 ------------------ UPDATE --------------
@@ -300,6 +304,8 @@ function load_level(lvl)
 	local lvl_data = lvls[lvl]
 	p.ent = lvl_data.ent
 	p.pick = table.copy(lvl_data.pick)
+	p.curr_entang = nil
+	entangs = {}
 
 
 	-- Copy map
