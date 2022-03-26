@@ -29,7 +29,7 @@ cur_lvl = 1
 
 -- pick is a stack
 lvls = {
-	{ent = 0, pick = {5, 5, 5}}
+	{ent = 1, pick = {5, 5, 5}}
 }
 
 p = {
@@ -38,8 +38,13 @@ p = {
  x = 0,
  y = 0,
 	dirx = 0,
- diry = 0
+ diry = 0,
+ look = 0, -- up < down < left < right
+ entang = false,
+ curr_entang = nil
 }
+
+entangs = {}
 
 function TIC()
 				
@@ -55,15 +60,35 @@ function TIC()
 end
 
 function input()
-
 	p.diry = 0
  p.dirx = 0
+ p.entang = false
+ p.break_block = false
+	
+	if btnp(4) then p.entang = true end
+	if btnp(5) then p.break_block = true end
 
-	if btnp(0) then p.diry=-1 end --up
- if btnp(1) then p.diry=1 end --down
- if btnp(2) then p.dirx=-1 end --left
- if btnp(3) then p.dirx=1 end --right 
-
+	if btnp(0) then
+		p.diry = -1
+		p.look = 0 
+		return --up
+	end
+	if btnp(1) then
+		p.diry = 1 
+		p.look = 1
+		return --down
+	end
+	if btnp(2) then
+		p.dirx = -1
+		p.look = 2
+		return --left
+	end
+	if btnp(3) then
+		p.dirx = 1
+		p.look = 3
+		return --right
+	end
+	
 end
 
 ------------------ UPDATE --------------
@@ -78,23 +103,58 @@ function update()
 		tile = mget(newx, newy)
 		
 		if (
-			handleRockTile(tile, newx, newy)
-			or handleGoalTile(tile, newx, newy)
+			handleGoalTile(tile, newx, newy)
 			or handleEmptyTile(tile, newx, newy)
 		) then end
 		
+	else 
+			local lookTile = getLookTile()
+			
+			tile = mget(lookTile[1], lookTile[2])
+			
+		if (handleEntang(tile, lookTile[1], lookTile[2])
+			or handleRockTile(tile, lookTile[1], lookTile[2])
+		)
+			 then end 
 	end
 
 end
 
 function handleRockTile(tile, newx, newy)
+	if not p.break_block then return false end
+	
 	if tile >= btiles.rock_min and tile <= btiles.rock_max then
+
 			if #p.pick > 0 then
 				local cur_pick = p.pick[#p.pick]
 				
 				if cur_pick >= tile then
 					p.pick[#p.pick] = nil
 					mset(newx, newy, btiles.empty)
+					
+					if p.curr_entang ~= nil and isTablesEqual(p.curr_entang, {newx, newy}) then
+						p.curr_entang = nil
+					end
+					
+					local broke = false
+					
+					for i = 1, #entangs do
+						for j = 1, #(entangs[i]) do
+							if isTablesEqual(entangs[i][j], {newx, newy}) then
+								-- remove all tiles in the entanglement that contains this tile
+								for k = 1, #entangs[i] do
+									mset(entangs[i][k][1], entangs[i][k][2], btiles.empty)			
+								end
+								
+								table.remove(entangs, i)
+								
+								broke = true
+								break	
+							end
+						end
+						if broke then break end
+					end
+					
 				end
 			end
 			
@@ -131,6 +191,42 @@ function handleEmptyTile()
 	return false
 end
 
+
+function handleEntang(tile, x, y)
+  if not (p.entang == true and p.ent > 0) then return false end
+		if tile >= btiles.rock_min and tile <= btiles.rock_max then
+			if p.curr_entang == nil then
+				p.curr_entang = {x,y}
+			else 
+				if	not isTablesEqual(p.curr_entang, {x,y}) then
+					if not isInEntang({x,y}) then
+						entangs[#entangs + 1] = {p.curr_entang,{x,y}}
+						p.curr_entang = nil
+						p.ent = p.ent - 1
+					end
+				end
+			end
+		end
+end
+
+function isInEntang(tileCoords)
+	for i = 1, #entangs do
+		for j = 1, #entangs[i] do
+			if isTablesEqual(entangs[i][j], tileCoords) then
+				return true
+			end
+		end
+	end
+	return false
+end
+
+function getLookTile()
+	if p.look == 0 then return {p.x, p.y - 1} end
+	if p.look == 1 then return {p.x, p.y + 1} end
+	if p.look == 2 then return {p.x - 1, p.y} end
+	if p.look == 3 then return {p.x + 1, p.y} end
+end
+
 --------------- RENDERING ---------------------
  
 function render()
@@ -138,10 +234,22 @@ function render()
  map(0, 0, 30, 17)
  spr(ftiles.player, p.x * 8, p.y * 8, 0)
 
+	drawEntangs()
 	hud()
 
 end
 
+function drawEntangs()
+	if p.curr_entang ~= nil then
+		rectb(p.curr_entang[1] * 8, p.curr_entang[2] * 8, 8, 8, 1)
+	end
+	
+	for i = 1, #entangs do
+		rectb(entangs[i][1][1] * 8, entangs[i][1][2] * 8, 8, 8, (i + 1)%15)
+		rectb(entangs[i][2][1] * 8, entangs[i][2][2] * 8, 8, 8, (i + 1)%15)
+	end
+end
+ 
 function hud()
 
 	rect(0, 0, screenw, 8, 6)
@@ -156,7 +264,10 @@ function hud()
 		end
 	end
 	print(pick_values, 90, 2)
-
+	
+	-- TODO: replace text with icon
+	reversePrint("Entanglements: " .. p.ent, 0, 2)
+	
 end
 
 
@@ -200,7 +311,6 @@ end
 
 
 
-
 ---------------- UTILS ---------------
 function table.copy(t)
   local t2 = {}
@@ -208,6 +318,29 @@ function table.copy(t)
     t2[k] = v
   end
   return t2
+end
+
+
+-- !!!Does not work with nested lists!!!
+function isTablesEqual(list1, list2)
+	if #list1 ~= #list2 then return false end
+	
+	for i = 1, #list1 do
+		if list1[i] ~= list2[i] then
+			return false
+		end	
+	end
+	
+	return true
+end
+
+function reversePrint(text, x, y, color, fixed, scale, smallfont) 
+ color = color or 15
+ fixed = fixed or false
+ scale = scale or 1
+ smallfont = smallfont or false
+ local width = print(text, 0, -30, color, fixed, scale, smallfont)
+ print(text, (240 - width - x), y, color, fixed, scale, smallfont)
 end
 -- <TILES>
 -- 001:eeeeeeeeeffffffeefffdffeeffddffeefffdffeefffdffeefffdffeeeeeeeee
