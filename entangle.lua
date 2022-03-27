@@ -88,9 +88,9 @@ function input()
 		return
 	end
 	
-	if p.dead then
-		return
-	end
+	--if p.dead then
+	--	return
+	--end
 	
 	if p.ice_skating == true then return end
 
@@ -135,8 +135,11 @@ function update()
 		
 		local tile = mget(newx, newy)
 		
-		if (handleFireTile(tile, newx, newy)
-			or handleIceTile(tile, newx, newy)
+		if not handleFireTile(tile, newx, newy) then
+			tile = btiles.empty
+		end
+		
+		if (handleIceTile(tile, newx, newy)
 			or handleGoalTile(tile, newx, newy)
 			or handleEmptyTile(tile, newx, newy)
 		) then end
@@ -169,7 +172,7 @@ function handleIceTile(tile, newx, newy)
 					or tile == btiles.wall
 					or (tile >= btiles.rock_min 
 					and tile <= btiles.rock_max)
-					or tile )
+	 )
 	then
 		p.ice_skating = false
 		return false
@@ -184,10 +187,6 @@ function handleFireTile(tile, newx, newy)
  	if isTablesEqual(k, {newx, newy}) then
   	if p.cur_pick < #p.pick then
 				p.cur_pick = p.cur_pick + 1
-			elseif p.cur_pick == #p.pick or #p.pick == 0 then
-				p.x = -100
-				p.y = -100
-				p.dead = true
 			end
 			animations[k] = nil
 			-- table.remove(animations, index)
@@ -195,7 +194,7 @@ function handleFireTile(tile, newx, newy)
    return false
   end
 	end
-	return false
+	return true
 end
 
 function handleRockTile(tile, newx, newy)
@@ -259,8 +258,6 @@ function handleGoalTile(tile, newx, newy)
 end
 
 function handleEmptyTile(tile, newx, newy)
-
-	trace(tile)
 
 	if tile == btiles.empty or tile == btiles.ice then
 		p.x = newx
@@ -328,8 +325,6 @@ function drawAnimations()
 		if v ~= nil then
 		 spr(v.initial + (v.cur_frame / v.rate) % v.nr_sprites, k[1] * 8, k[2] * 8, 0)
 		 v.cur_frame = v.cur_frame + 1
-		else
-			trace("CCCC")
 		end
 	end
 end
