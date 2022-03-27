@@ -3,6 +3,15 @@
 -- desc:   The adventures and puzzles of a young Joe Martins
 -- script: lua
 
+--------SFX--------
+--Tocar nestas notas
+--44 - D#4 -- partir pedra
+--50 - B#3 -- entaglement
+--51 - B#3 -- second entanglemtn
+--56 - A#3 -- cant break block
+--58 - F#7 -- fogo
+--60 - C#5 -- gelo
+
 
 --------------- CONSTANTS ----------------
 btiles = {
@@ -40,7 +49,7 @@ screenh = 136
 ----------------- MAIN --------------------
 
 t=0
-cur_lvl = 6
+cur_lvl = 4
 
 -- pick is a stack
 lvls = {
@@ -165,6 +174,7 @@ function handleIceTile(tile, newx, newy)
 	
 	if tile == btiles.ice then
 		p.ice_skating = true
+		sfx(60, "C#5", -1, 3)
 		return false
 	end
 	
@@ -195,6 +205,7 @@ function handleFireTile(tile, newx, newy)
 			animations[k] = nil
 			-- table.remove(animations, index)
 			mset(newx, newy, btiles.empty)
+			sfx(58, "F#7", -1, 3)
    return false
   end
 	end
@@ -237,9 +248,14 @@ function handleRockTile(tile, newx, newy)
 						if broke then break end
 					end
 					
+				else
+					sfx(56, "A#3", -1, 3)
 				end
+			else
+					sfx(56, "A#3", -1, 3)
 			end
 			
+			sfx(44, "D#4", -1, 3)
 			return true
 		end
 		
@@ -279,12 +295,14 @@ function handleEntang(tile, x, y)
 		if tile >= btiles.rock_min and tile <= btiles.rock_max then
 			if p.curr_entang == nil then
 				p.curr_entang = {x,y}
+				sfx(50, "B#3", -1, 3)
 			else 
 				if	not isTablesEqual(p.curr_entang, {x,y}) then
 					if not isInEntang({x,y}) then
 						entangs[#entangs + 1] = {p.curr_entang,{x,y}}
 						p.curr_entang = nil
 						p.ent = p.ent - 1
+						sfx(51, "B#3", -1, 3)
 					end
 				else
 					p.curr_entang = nil
@@ -620,6 +638,12 @@ end
 
 -- <SFX>
 -- 000:000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000304000000000
+-- 044:2f004f005f006f007f009f00af00af00bf00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00309000000000
+-- 050:2c004c305c306c307c30fc302c0b4c3b5c3bfc3bfc3bfc3bfc00fc00fc00fc00fc00fc00fc00fc00fc00fc00fc00fc00fc00fc00fc00fc00fc00fc00a85000000000
+-- 051:2c004c305c306c307c30fc302c0b4c3b5c3bfc3bfc3bfc3b2c074c375c376c377c37fc37fc00fc00fc00fc00fc00fc00fc00fc00fc00fc00fc00fc00a8b000000000
+-- 056:05000500050005000500f500f500f5000500050005000500050005000500f500f500f500f500f500f500f500f500f500f500f500f500f500f500f500204000000000
+-- 058:5f006f006f007f009f00af00bf00cf00cf00df00ef00ef00ef00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00605000000000
+-- 060:74205460249004c004c004c004c024c034b044a05490646084509430a420a400b400c400f400f400f400f400f400f400f400f400f400f400f400f400405000000000
 -- </SFX>
 
 -- <PALETTE>
