@@ -396,7 +396,7 @@ function load_level(lvl)
 	p.cur_pick = 1
 	p.dead = false
 	entangs = {}
-	--animations = {}
+	animations = {}
 	
 
 	-- Copy map
@@ -470,27 +470,33 @@ function reversePrint(text, x, y, color, fixed, scale, smallfont)
 	return print(text, (240 - width - x), y, color, fixed, scale, smallfont)
 end
 -- <TILES>
--- 001:eecddcccee2221cdc21121dddccc21ccddcd21cccccc21edc222221cecddcccc
--- 002:eecddcccee22221dc21cc21ddccc221cddc221ccc22cdeedc222221cecddcccc
--- 003:eecddcccee2222cdc2cce21ddcc221ccddcdd21cc2ccd21dcd2221ccecddcccc
--- 004:eecddcccee22decdcc2ceeddd21c2cccd222221ccccc21edcdc221ccecddcccc
--- 005:eecddccce222221dc221eeddd2221cccddcd221cccccd22dc22221ccecddcccc
--- 006:eecddcccee2221cdc221eeddd22221ccd2cdd21cc2ccde2dc222222cecddcccc
--- 007:eecddccce222222dc222222ddccc221cddcd22ccccc221edcdc221ccecddcccc
--- 008:eecddcccee2221ddc2cce21ddc2221ccd2cdd21cc2ccd21dcd2221ccecdddccc
--- 009:eecddccce222221dc2cce21dd222221cddcdd21ccccc21edcdc21eccecddcccc
--- 010:eecddcccee2222cdcc21e2dddc21c2ccd222221cc2ccd21dc2cce21cecddcccc
--- 011:eecddccce22221cdc2cc21ddd22221ccd2cdd21cc2ccd21dc222221cecddcccc
--- 012:eecddcccee22221dc21ceeddd21cccccd21ddeccc21cdeedcd22221cecddcccc
--- 013:eecddccce22221cdc21ce21dd21cc21cd21dd21cc21cd21dc22221ccecddcccc
--- 014:eecddccce222221dc21ceeddd2221cccd22221ccc21cdeedc222221cecddcccc
--- 015:eecddccce222221dc21ceeddd21cccccd2221eccc21cdeedc21ceeccecddcccc
+-- 001:eeeeeeeeea8889aee89989aeeaaa89aeeaaa89aeeaaa89aee888889eeeeeeeee
+-- 002:eeeeeeeeea88889ee89aa89eeaaa889eeaa889aee88aaaaee888889eeeeeeeee
+-- 003:eeeeeeeeea8888aee8aaa89eeaa889aeeaaaa89ee8aaa89eea8889aeeeeeeeee
+-- 004:eeeeeeeeea88aaaeea8aaaaee89a8aaee888889eeaaa89aeeaa889aeeeeeeeee
+-- 005:eeeeeeeee888889ee889aaaee8889aaeeaaa889eeaaaa88ee88889aeeeeeeeee
+-- 006:eeeeeeeeea8889aee889aaaee88889aee8aaa89ee8aaaa8ee888888eeeeeeeee
+-- 007:eeeeeeeee888888ee888888eeaaa889eeaaa88aeeaa889aeeaa889aeeeeeeeee
+-- 008:eeeeeeeeee8889aee8aaa89eea8888aee8aaa89ee8aaa89eea8889aeeeeeeeee
+-- 009:eeeeeeeee888889ee8aaa89ee888889eeaaaa89eeaaa89aeeaa89aaeeeeeeeee
+-- 010:eeeeeeeeea8888aeea89a8aeea89a8aee888889ee8aaa89ee8aaa89eeeeeeeee
+-- 011:eeeeeeeee88889aee8aa89aee88889aee8aaa89ee8aaa89ee888889eeeeeeeee
+-- 012:eeeeeeeeea88889ee89aaaaee89aaaaee89aaaaee89aaaaeea88889eeeeeeeee
+-- 013:eeeeeeeee88889aee89aa89ee89aa89ee89aa89ee89aa89ee88889aeeeeeeeee
+-- 014:eeeeeeeee888889ee89aaaaee8889aaee88889aee89aaaaee888889eeeeeeeee
+-- 015:eeeeeeeee888889ee89aaaaee89aaaaee8889aaee89aaaaee89aaaaeeeeeeeee
 -- 032:eecddccceeccdecdcccceedddcccccccddcddeccccccdeedcdcceeccecddcccc
 -- 033:00000000444444440777bbb007a77ab000a77a0000aa7a0000777b0000000000
 -- 034:07555570055ab55005abaa5005baaa5005555550055775500550055005500550
 -- 035:d0000dc0cc000c0000000000cdc00ddcdd0000dd0000000c00c0dc000d00dcc0
 -- 048:07555570055ab55005abaa5005baaa5005555550055775500550055005500550
 -- 049:0055550000aa550000aa55000055550000555500007755000077550000775500
+-- 060:0000000000000000000000700000bbcc077bcc00007000000000000000000000
+-- 061:0000000000077770000b7b7000777770077777700777b7c00bbbbc0000000000
+-- 062:0005000660560000000000500600005605000000000605500000060006000000
+-- 063:0600006000000000006500000005000560000056550000000000500000060000
+-- 076:00077777000b7bb7000b7b7700777777077777770777b7cc0bbbbbc000000000
+-- 077:00000770000007b7000077cc00077b000077c00077bc0000777000000bb00000
 -- 090:0000000000008000000000000800008000000000000800000800008000000000
 -- 128:dddddddddcccccccdcccccccdcccccccdcccccccdcccccccdcccccccdddddddd
 -- 129:ddddddddccccccccccccccccccccccccccccccccccccccccccccccccdddddddd
@@ -531,11 +537,19 @@ end
 -- 189:eecddccce66666cdc6ccee6dd6cccc6cd6cdde6cc6ccde6dc66666ccecddcccc
 -- 190:eecddccce666666dc6cceeddd666ccccd6666eccc6ccdeedc666666cecddcccc
 -- 191:eecddccce666666dc66ceeddd66cccccd6666eccc66cdeedc66ceeccecddcccc
+-- 200:cbbcccccdcdddbddcccccbbbdddcdddcbbbbccccdbdddcddcccccbbbdddcdddb
+-- 201:ccccccccdcdddcddccccccccdddcdddcccccccccdcdddcddccccccccdddcdddc
+-- 202:eeeeeeeeecccccceeddddddeecccccceeddddddeecccccceeddddddeeeeeeeee
+-- 203:888888888aaaaaa8899999988aaaaaa8899999988aaaaaa88999999888888888
 -- 204:eecddccce666667dc67ce67dd67cc67cd67dd67cc67cd67dc666667cecddcccc
 -- 205:eecddcccee6667cdc67767dddccc67ccddcd67cccccc67edc666667cecddcccc
 -- 206:eecddcccee66667dc67cc67ddccc667cddc667ccc66cdeedc666667cecddcccc
 -- 207:eecddcccee6666cdc6cce67ddcc667ccddcdd67cc6ccd67dcd6667ccecddcccc
 -- 208:0444ffdd000ff4fc00004f98000dc98800dcc0890dcc0009dcc00008dc000000
+-- 216:0000000000c0c0000cd00000000000000eec0dc0ddcccddceeeddc0000000000
+-- 217:ccc000ccd0eeecddcccccc00dddcdeecc00cccccdccddcddc000ccccddd0eedc
+-- 218:00000000020000002220000023300000d4200000cd000000c000000000000000
+-- 219:000000000000000000aaaa000faaaaf0afddddfaabccccbaabaaaabaabccccba
 -- 220:eecddcccee66decdcc6ceeddd67c6cccd666667ccccc67edcdc667ccecddcccc
 -- 221:eecddccce666667dc667eeddd6667cccddcd667cccccd66dc66667ccecddcccc
 -- 222:eecddcccee6667cdc667eeddd66667ccd6cdd67cc6ccde6dc666666cecddcccc
