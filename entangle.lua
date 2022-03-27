@@ -188,7 +188,7 @@ function handleFireTile(tile, newx, newy)
 			
  for k, v in pairs(animations) do
  	if isTablesEqual(k, {newx, newy}) then
-  	if p.cur_pick < #p.pick then
+  	if p.cur_pick <= #p.pick then
 				p.cur_pick = p.cur_pick + 1
 			end
 			animations[k] = nil
@@ -396,7 +396,7 @@ function load_level(lvl)
 	p.cur_pick = 1
 	p.dead = false
 	entangs = {}
-	animations = {}
+	--animations = {}
 	
 
 	-- Copy map
