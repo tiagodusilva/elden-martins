@@ -40,7 +40,7 @@ screenh = 136
 ----------------- MAIN --------------------
 
 t=0
-cur_lvl = 7
+cur_lvl = 6
 
 -- pick is a stack
 lvls = {
@@ -396,6 +396,7 @@ function load_level(lvl)
 	p.cur_pick = 1
 	p.dead = false
 	entangs = {}
+	animations = {}
 	
 
 	-- Copy map
@@ -553,7 +554,6 @@ end
 -- 254:eecddccce666667dc67ceeddd6667cccd66667ccc67cdeedc666667cecddcccc
 -- 255:eecddccce666667dc67ceeddd67cccccd6667eccc67cdeedc67ceeccecddcccc
 -- </TILES>
-
 
 -- <SPRITES>
 -- 000:0422000004444117057700113322267b3322270a322223000eedd0000e00d000
