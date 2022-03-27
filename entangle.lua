@@ -60,7 +60,8 @@ p = {
  look = 0, -- up < down < left < right
  entang = false,
  curr_entang = nil,
- ice_skating = false
+ ice_skating = false,
+ cur_pick = 1
 }
 
 entangs = {}
@@ -176,11 +177,12 @@ function handleRockTile(tile, newx, newy)
 	
 	if tile >= btiles.rock_min and tile <= btiles.rock_max then
 
-			if #p.pick > 0 then
-				local cur_pick = p.pick[1]
+			if p.cur_pick <= #p.pick then
+				local cur_pick = p.pick[p.cur_pick]
 				
 				if cur_pick >= tile then
-				 table.remove(p.pick, 1)
+				 -- table.remove(p.pick, 1)
+					p.cur_pick = p.cur_pick + 1
 					mset(newx, newy, btiles.empty)
 					
 					if p.curr_entang ~= nil and isTablesEqual(p.curr_entang, {newx, newy}) then
@@ -322,21 +324,28 @@ end
  
 function hud()
 
-	rect(0, 0, screenw, 10, 6)
+	--rect(0, 0, screenw, 10, 6)
+	local w = print("Level " .. tostring(cur_lvl), -10, -10)
+	rect(0, 0, w + 2, 10, 6) 
 	print("Level " .. tostring(cur_lvl), 2, 2)
 
-	spr(ftiles.pick, 80, 1, 0)
 	
-	local	pick_values = ""
+	spr(ftiles.pick, 80, 1, 0)
+
+	local used_pick_values = ""
+	local unused_pick_values = ""	
 		
 	for k, v in pairs(p.pick) do
-		if k == 1 then
-			pick_values = " [" ..  v  .. "] "
+		if k < p.cur_pick then
+			used_pick_values = used_pick_values .. v .. " "
+		elseif k == p.cur_pick then
+			unused_pick_values = " [" ..  v  .. "] "
 		else
-			pick_values = pick_values .. v .. " "
+			unused_pick_values = unused_pick_values .. v .. " "
 		end
 	end
-	print(pick_values, 90, 2)
+	local w = print(used_pick_values, 90 + 1, 2, 9)
+ print(unused_pick_values, 90 + w, 2)
 	
 	-- TODO: replace text with icon
 	local ePos = reversePrint("x" .. p.ent, 1, 2)
@@ -356,6 +365,7 @@ function load_level(lvl)
 	p.ent = lvl_data.ent
 	p.pick = table.copy(lvl_data.pick)
 	p.curr_entang = nil
+	p.cur_pick = 1
 	entangs = {}
 
 
